@@ -69,51 +69,51 @@ int requestedTimeIsTaken(TableItem* p, int r) {
  *      novo -> o ponteiro para a nova entrada da tabela.
  */
 TableItem* newTableItem(int newID) {
-    TableItem* novo = (TableItem*) malloc(sizeof(TableItem));
+    TableItem* newTI = (TableItem*) malloc(sizeof(TableItem));
 
     // aleatorizando tempos de chegada e serviço
-    novo->arrivalTime = getRandomInt(0, MAX_ARRIVAL);
-    novo->burstTime = getRandomInt(1, MAX_BURST_TIME);
-    novo->PID = -1; // ainda não inicializado
+    newTI->arrivalTime = getRandomInt(0, MAX_ARRIVAL);
+    newTI->burstTime = getRandomInt(1, MAX_BURST_TIME);
+    newTI->PID = -1; // ainda não inicializado
 
     // inicializando vetor de requisições
     for (int i = 0; i < IO_LIMIT; i++) {
-        novo->ioRequest[i] = NULL;
+        newTI->ioRequest[i] = NULL;
     }
 
     // determinando número de requisições de IO
     int IOrequests = 0;
-    if (novo->burstTime > 1) {
+    if (newTI->burstTime > 1) {
         // garantindo que nenhuma requisição acontece
         // no primeiro ou último instante de execução
-        IOrequests = getRandomInt(0, IO_LIMIT < novo->burstTime ? IO_LIMIT : novo->burstTime);
+        IOrequests = getRandomInt(0, IO_LIMIT < newTI->burstTime ? IO_LIMIT : newTI->burstTime);
     }
 
     // determinando aleatoriamente o tipo de dispositivo e tempo de requisição
     for (int i = 0; i < IOrequests; i++) {
         IOType newType = (IOType) getRandomInt(0, IO_OPTIONS);
-        int newTime = getRandomInt(1, novo->burstTime - 1);
+        int newTime = getRandomInt(1, newTI->burstTime - 1);
 
         // evitando conflito de tempo
-        while (requestedTimeIsTaken(novo, newTime)) {
-            newTime = getRandomInt(1, novo->burstTime - 1);
+        while (requestedTimeIsTaken(newTI, newTime)) {
+            newTime = getRandomInt(1, newTI->burstTime - 1);
         }
 
-        novo->ioRequest[i] = newIORequest(newType, newTime);
+        newTI->ioRequest[i] = newIORequest(newType, newTime);
     }
 
     // ordenando requisições
     for (int j = 0; j < IOrequests - 1; j++) {
         for (int k = j+1; k < IOrequests; k++) {
-            if (novo->ioRequest[j]->time > novo->ioRequest[k]->time) {
-                IORequest* aux = novo->ioRequest[j];
-                novo->ioRequest[j] = novo->ioRequest[k];
-                novo->ioRequest[k] = aux;
+            if (newTI->ioRequest[j]->time > newTI->ioRequest[k]->time) {
+                IORequest* aux = newTI->ioRequest[j];
+                newTI->ioRequest[j] = newTI->ioRequest[k];
+                newTI->ioRequest[k] = aux;
             }
         }
     }
 
-    return novo;
+    return newTI;
 }
 
 /* A função a seguir libera o espaço de memória ocupado
