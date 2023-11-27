@@ -74,21 +74,51 @@ TableItem* newTableItem(int newID) {
     return novo;
 }
 
-void freeTableItem(TableItem* process) {
-    if (process == NULL) return;
+void freeTableItem(TableItem* ti) {
+    if (ti == NULL) return;
 
     for (int i = 0; i < IO_LIMIT; i++) {
-        freeIORequest(process->ioRequest[i]);
+        freeIORequest(ti->ioRequest[i]);
     }
 
-    free(process);
+    free(ti);
 }
 
-void printIORequest(IORequest* request) {
-    if (request == NULL) return;
+void printProcess(Process* p) {
+    if (p == NULL) return;
 
-    printf("\nRequest Time: \t%d\n", request->time);
-    printf("Request Type: \t%d\n", request->type);
+    printf("\nPID: %d\n", p->PID);
+    printf("PPID: %d\n", p->PPID);
+    switch (p->status)
+    {
+    case NEW:
+        printf("STATUS: %s\n", "NEW");
+        break;
+    case READY:
+        printf("STATUS: %s\n", "READY");
+        break;
+    case RUN:
+        printf("STATUS: %s\n", "RUN");
+        break;
+    case COMPLETE:
+        printf("STATUS: %s\n", "COMPLETE");
+        break;
+    default:
+        printf("STATUS: %s\n", "WAIT");
+        break;
+    }
+    printf("Initial Time: %d\n", p->initialTime);
+    printf("Current Time: %d\n", p->currentTime);
+    printf("Completion Time: %d\n", p->completionTime);
+
+    printf("\n");
+}
+
+void printIORequest(IORequest* r) {
+    if (r == NULL) return;
+
+    printf("\nRequest Time: %d\n", r->time);
+    printf("Request Type: %d\n", r->type);
 
     printf("\n");
 }
@@ -96,9 +126,9 @@ void printIORequest(IORequest* request) {
 void printTableItem(TableItem* ti) {
     if (ti == NULL) return;
 
-    printf("\nPID: \t%d\n", ti->PID);
-    printf("Arrival Time: \t%d\n", ti->arrivalTime);
-    printf("Burst Time: \t%d\n", ti->burstTime);
+    printf("\nPID: %d\n", ti->PID);
+    printf("Arrival Time: %d\n", ti->arrivalTime);
+    printf("Burst Time: %d\n", ti->burstTime);
 
     printf("IO Requests ---------\n");
     for (int i = 0; i < IO_LIMIT; i++) {

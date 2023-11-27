@@ -30,7 +30,8 @@ int requestedTimeIsTaken(TableItem* process, int request);          // verifica 
 TableItem* newTableItem(int newID);                                 // cria uma nova entrada na tabela de processos
 void freeTableItem(TableItem* process);                             // cria uma nova entrada na tabela de processos
 
-void printIORequest(IORequest* request);                            // exibe as informações de uma requisição de IO
+void printProcess(Process* p);
+void printIORequest(IORequest* r);                                  // exibe as informações de uma requisição de IO
 void printTableItem(TableItem* ti);                                 // exibe as informações de uma entrada na tabela de processos
 
 #endif

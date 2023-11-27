@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include "queue.h"
 
-QueueItem* newQueueItem (int qiId) {
+QueueItem* newQueueItem (Process* queuedProcess) {
+    if (queuedProcess == NULL) return NULL;
+
     QueueItem* item = (QueueItem*) malloc(sizeof(QueueItem));
 
-    item->id = qiId;
+    item->process = queuedProcess;
     item->next = NULL;
 
     return item;
@@ -13,6 +15,7 @@ QueueItem* newQueueItem (int qiId) {
 
 void freeQueueItem (QueueItem* item){
     if (item == NULL) return;
+    if (item->process != NULL) free(item->process);
 
     free(item);
 }
@@ -27,8 +30,8 @@ Queue* newQueue () {
     return Q;
 }
 
-void push(Queue* Q, int id) {
-    QueueItem* item = newQueueItem(id);
+void push(Queue* Q, Process* p) {
+    QueueItem* item = newQueueItem(p);
 
     if (Q->size == 0) {
         Q->head = Q->tail = item;
