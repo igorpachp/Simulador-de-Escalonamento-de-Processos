@@ -20,8 +20,6 @@ int main() {
         printProcess(p[i]);
     }
 
-    // QueueItem* QI = newQueueItem(p[2]);
-
     for (int i = 0; i < 10; i++) {
         push(Q, p[i]);
     }

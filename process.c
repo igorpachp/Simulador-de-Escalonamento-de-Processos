@@ -3,7 +3,17 @@
 #include "util.h"
 #include "process.h"
 
-IORequest* newIORequest(IOType type, int time){
+/* Esta função aloca o espaço de memória para uma
+ * requisição de I/O e inicializa o tipo de dispositivo
+ * e o tempo relativo em que a requisição ocorre.
+ * 
+ * Entradas:
+ *      type -> o tipo de dispositivo I/O.
+ *      time -> o instante de tempo.
+ * Saidas:
+ *      newRequest -> a requisição recém alocada.
+ */
+IORequest* newIORequest(IOType type, int time) {
     IORequest* newRequest = (IORequest*) malloc(sizeof(IORequest));
 
     newRequest->time = time;
@@ -12,17 +22,35 @@ IORequest* newIORequest(IOType type, int time){
     return newRequest;
 }
 
-void freeIORequest(IORequest* request){
-    if (request == NULL) return;
+/* Esta função libera o espaço de memória usado por uma
+ * requisição de I/O.
+ * 
+ * Entradas:
+ *      r -> um ponteiro para uma requisição de I/O.
+ */
+void freeIORequest(IORequest* r) {
+    if (r == NULL) return;
 
-    free(request);
+    free(r);
 }
 
-int requestedTimeIsTaken(TableItem* process, int request) {
-    if (process == NULL) return 0;
+/* A função a seguir verifica se uma entrada da tabela
+ * de processos já possui uma requisição de I/O em um
+ * dado tempo.
+ * 
+ * Entradas:
+ *      p -> um ponteiro para a tabela de processos.
+ *      r -> o instante de tempo.
+ * Saidas:
+ *      0 -> quando o ponteiro fornecido é inválido,
+ *          ou quando o instante de tempo está livre.
+ *      1 -> já existe outra requisição neste instante.
+ */
+int requestedTimeIsTaken(TableItem* p, int r) {
+    if (p == NULL) return 0;
 
     for (int i = 0; i < IO_LIMIT; i++) {
-        if (process->ioRequest[i] != NULL && process->ioRequest[i]->time == request) {
+        if (p->ioRequest[i] != NULL && p->ioRequest[i]->time == r) {
             return 1;
         }
     }
@@ -30,13 +58,25 @@ int requestedTimeIsTaken(TableItem* process, int request) {
     return 0;
 }
 
+/* A função a seguir aloca espaço na memória para uma 
+ * nova entrada na tabela de processos, determina o
+ * número de requisições de I/O que o processo fará e
+ * gera tempos de chegada e serviço aleatoriamente.
+ * 
+ * Entradas:
+ *      newID -> o id para o processo.
+ * Saidas:
+ *      novo -> o ponteiro para a nova entrada da tabela.
+ */
 TableItem* newTableItem(int newID) {
     TableItem* novo = (TableItem*) malloc(sizeof(TableItem));
 
+    // aleatorizando tempos de chegada e serviço
     novo->arrivalTime = getRandomInt(0, MAX_ARRIVAL);
     novo->burstTime = getRandomInt(1, MAX_BURST_TIME);
     novo->PID = -1; // ainda não inicializado
 
+    // inicializando vetor de requisições
     for (int i = 0; i < IO_LIMIT; i++) {
         novo->ioRequest[i] = NULL;
     }
@@ -44,15 +84,17 @@ TableItem* newTableItem(int newID) {
     // determinando número de requisições de IO
     int IOrequests = 0;
     if (novo->burstTime > 1) {
+        // garantindo que nenhuma requisição acontece
+        // no primeiro ou último instante de execução
         IOrequests = getRandomInt(0, IO_LIMIT < novo->burstTime ? IO_LIMIT : novo->burstTime);
     }
 
-    // determinando o tipo de dispositivo e tempo de requisição
+    // determinando aleatoriamente o tipo de dispositivo e tempo de requisição
     for (int i = 0; i < IOrequests; i++) {
         IOType newType = (IOType) getRandomInt(0, IO_OPTIONS);
         int newTime = getRandomInt(1, novo->burstTime - 1);
 
-        // verificando conflito de tempo
+        // evitando conflito de tempo
         while (requestedTimeIsTaken(novo, newTime)) {
             newTime = getRandomInt(1, novo->burstTime - 1);
         }
@@ -74,6 +116,13 @@ TableItem* newTableItem(int newID) {
     return novo;
 }
 
+/* A função a seguir libera o espaço de memória ocupado
+ * por uma entrada na tabela de processos e suas
+ * requisições de I/O.
+ * 
+ * Entradas:
+ *      ti -> um ponteiro para a tabela de processos.
+ */
 void freeTableItem(TableItem* ti) {
     if (ti == NULL) return;
 
@@ -138,4 +187,3 @@ void printTableItem(TableItem* ti) {
 
     printf("\n");
 }
-
