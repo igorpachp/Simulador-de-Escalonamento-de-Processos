@@ -3,7 +3,7 @@
 #include "queue.h"
 
 /* Esta função aloca um espaço em memória para
- * uma nova entradade processo em uma fila. A 
+ * uma nova entrada de processo em uma fila. A 
  * função também inicializa esta entrada com
  * o processo recebido.
  * 
