@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "queue.h"
+#include "../queue.h"
 
 int main() {
     Queue* Q = newQueue();
