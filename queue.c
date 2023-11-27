@@ -13,7 +13,7 @@
  *      NULL -> quando o ponteiro fornecido é inválido.
  *      item -> o ponteiro para a entrada recém criada.
  */
-QueueItem* newQueueItem (Process* queuedProcess) {
+QueueItem* newQueueItem(Process* queuedProcess) {
     if (queuedProcess == NULL) return NULL;
 
     QueueItem* item = (QueueItem*) malloc(sizeof(QueueItem));
@@ -37,7 +37,7 @@ QueueItem* newQueueItem (Process* queuedProcess) {
  * Entradas:
  *      item -> a entrada que deve ser liberada.
  */
-void freeQueueItem (QueueItem* item){
+void freeQueueItem(QueueItem* item) {
     if (item == NULL) return;
     if (item->process != NULL) free(item->process);
 
@@ -45,13 +45,13 @@ void freeQueueItem (QueueItem* item){
 }
 
 /* A função a seguir aloca um espaço em memória para
- * uma nova fila, inicializando seu tamanho em 0 e suas
+ * uma nova fila, inicializando seu tamanho em 0 e
  * suas referências como NULL.
  * 
  * Saidas:
  *      Q -> o ponteiro para a fila recém criada.
  */
-Queue* newQueue () {
+Queue* newQueue() {
     Queue* Q = (Queue*) malloc(sizeof(Queue));
 
     Q->size = 0;
@@ -87,8 +87,8 @@ void push(Queue* Q, Process* p) {
 }
 
 /* A função pop remove a primeira entrada da fila 'Q'.
- * Após a remoção, o processo primeiro processo da fila
- * será aquele referenciado como o próximo da entrada
+ * Após a remoção, o primeiro processo da fila será 
+ * aquele referenciado como o próximo da entrada
  * removida. A função também atualiza o tamanho da fila.
  * 
  * Entradas:
