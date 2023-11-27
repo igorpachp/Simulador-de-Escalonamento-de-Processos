@@ -53,7 +53,7 @@ QueueItem* pop(Queue* Q) {
 }
 
 void freeQueue(Queue* Q) {
-    if (Q == NULL || Q->size == 0) return;
+    if (Q == NULL) return;
 
     while (Q->size > 0) {
         freeQueueItem(pop(Q));
