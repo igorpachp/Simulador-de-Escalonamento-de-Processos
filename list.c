@@ -16,35 +16,14 @@
  *      item -> o ponteiro para a entrada recém criada.
  */
 ListItem* newListItem(Process* p, int arr, int exit, IOType type) {
-    if (p == NULL) return NULL;
-
     ListItem* item = (ListItem*) malloc(sizeof(ListItem));
     item->process = p;
     item->arrivalTime = arr;
     item->exitTime = exit;
-    item->device = type;
+    item->type = type;
     item->next = NULL;
 
     return item;
-}
-
-/* Esta função libera o espaço de memória ocupado
- * por uma entrada de processo em uma lista. Nesta
- * função, o espaço ocupado pelo processo referenciado
- * internamente também seja NÃO é liberado.
- * 
- * Esta função não retém informações sobre a entrada de
- * processo previamente apontada pelo elemento liberado,
- * ficando a cargo do programador guardar esta informação
- * antes da chamada da função, se isto for de interesse.
- * 
- * Entradas:
- *      item -> a entrada que deve ser liberada.
- */
-void freeListItem (ListItem* item){
-    if (item == NULL) return;
-
-    free(item);
 }
 
 /* A função a seguir aloca um espaço em memória para
@@ -59,7 +38,6 @@ List* newList() {
 
     l->size = 0;
     l->first = NULL;
-    l->last = NULL;
 
     return l;
 }
@@ -69,26 +47,19 @@ List* newList() {
  * entradas de processos contidas na lista também sejam
  * liberados.
  * 
- * Os processos referenciados pelas entradas NÂO são
- * liberados, caso seja de interesse o programador deve
- * salvar as referências antes de executar a função para
- * poder liberar os processos.
- * 
  * Entradas:
  *      Q -> um ponteiro para uma lista de processos.
  */
-void freeList(List* l) {
-    if (l == NULL) return;
-
-    while (l->size > 0) {
-        freeListItem(removeFirst(l));
+void freeList(List* l) { 
+    while(removeElement(l, 0) != NULL) {
+        continue;
     }
 
-    free(l);
+    free(l); 
 }
 
 /* A função append adiciona a entrada 'item' a lista
- * 'l'. * Após a inserção, a entrada inserida será a 
+ * 'l'. Após a inserção, a entrada inserida será a 
  * última da lista.
  * 
  * Entradas:
@@ -96,41 +67,73 @@ void freeList(List* l) {
  *      item -> um ponteiro para uma entrada de lista.
  */
 void append(List* l, ListItem* item) {
-    if (l == NULL || item == NULL) return;
-
-    if (l->size == 0) {
-        l->first = l->last = item;
+    if (l->first == NULL) {
+        l->first = item;
     } else {
-        l->last->next = item;
-        l->last = item;
+        ListItem* p = l->first;
+        while (p->next != NULL) {
+            p = p->next;
+        }
+        p->next = item;
     }
 
     l->size++;
 }
 
-/* A função removeFirst remove a primeira entrada da 
- * lista 'l'. Após a remoção, o primeiro processo da
- * lista será aquele referenciado como o próximo da 
- * entrada removida. A função também atualiza o 
- * tamanho da lista.
+/* A função removeElemento remove a primeira entrada da 
+ * lista 'l' igual ao elemento informado. A função 
+ * também atualiza o tamanho da lista e libera o espaço
+ * previamente ocupado pelo elemento removido.
  * 
  * Entradas:
  *      Q -> um ponteiro para uma lista de processos.
+ *      e -> um ponteiro para um item.
  * Saidas:
  *      NULL -> quando o ponteiro fornecido é inválido,
  *              ou quando a lista não possui entradas.
  *      aux -> o ponteiro para a entrada recém removida.
  */
-ListItem* removeFirst(List* l) {
-    if (l == NULL || l->size == 0) return NULL;
+ListItem* removeElement(List* l, ListItem* e) {
+    if (l->first == NULL) return NULL;
 
-    ListItem* aux = l->first;
-    l->first = l->first->next;
-    l->size--;
+    if (l->first->next == NULL) {
+        if (l->first == e) {
+            free(l->first);
+            l->first = NULL;
+            l->size--;
+            return e;
+        } else
+            return NULL;
+    }
 
-    if (l->size == 0) l->last = NULL;
+    if (l->first == e && l->first->next != NULL) {
+        ListItem* prox = l->first->next;
+        free(l->first);
+        l->first = prox;
+        return prox;
+    }
 
-    return aux;
+    ListItem* previous = l->first;
+    ListItem* current = l->first->next;
+
+    while (current != e && current->next != NULL) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == e) {
+        if (current->next == NULL) {
+            previous->next = NULL;
+        } else {
+            previous->next = current->next;
+        }
+        l->size--;
+
+        free(current);
+
+        return e;
+    } else
+        return NULL;
 }
 
 void printList(List* l) {
@@ -138,7 +141,7 @@ void printList(List* l) {
 
     printf("\nSize: %d\n", l->size);
     while (item != NULL) {
-        printf("Arrival: %d, Exit: %d, IOType: %d\n", item->arrivalTime, item->exitTime, item->device);
+        printf("Arrival: %d, Exit: %d, IOType: %s\n", item->arrivalTime, item->exitTime, IOtoString(item->type));
         item = item->next;
     }
 }

@@ -2,6 +2,12 @@
 #include <time.h>
 #include "util.h"
 
+char* IOtoString(IOType t) {
+    char* IOTypeString[] = {"Disco", "Fita", "Impressora"};
+
+    return IOTypeString[t];
+}
+
 void setRandomSeed() {
     srand(time(0));
 }
