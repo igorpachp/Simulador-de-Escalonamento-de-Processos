@@ -74,7 +74,7 @@ void newProcessHandler() {
 
             processTable[i]->PID = aux->PID;
             push(highPrioQ, aux);
-            printf("\nProcesso #%d criado com ID %d!", startedProcs, i + 1);
+            printf("\nProcesso #%d criado com ID %d!", i + 1, startedProcs);
         }
     }
 }
@@ -96,7 +96,7 @@ void fetchNextProcess() {
         return;
     }
 
-    printf("\nO processo %d está executando!\n", runningProcess->PID);
+    printf("\nO processo %d esta executando!\n", runningProcess->PID);
 
     // Obtem a definicao do processo em relacao ao PID
     for (int i = 0; i < MAX_PROCESS; i++) {
@@ -142,15 +142,15 @@ void startIORequisition(IOType t) {
     if (t == DISK) {
         push(diskQ, runningProcess);
         runningProcess->status = WAIT;
-        printf("\nO processo %d está na fila de disco!\n", runningProcess->PID);
+        printf("\nO processo %d esta na fila de disco!\n", runningProcess->PID);
     } else if (t == TAPE) {
         push(tapeQ, runningProcess);
         runningProcess->status = WAIT;
-        printf("\nO processo %d está na fila de fita!\n", runningProcess->PID);
+        printf("\nO processo %d esta na fila de fita!\n", runningProcess->PID);
     } else if (t == PRINTER) {
         push(printerQ, runningProcess);
         runningProcess->status = WAIT;
-        printf("\nO processo %d está na fila de impressora!\n", runningProcess->PID);
+        printf("\nO processo %d esta na fila de impressora!\n", runningProcess->PID);
     }
 
     runningProcess = NULL;
@@ -163,19 +163,19 @@ void IOQueueHandler() {
         Process* IOproc = pop(diskQ);
         append(IOList, newListItem(IOproc, currentTime, currentTime + DISK_TIME, DISK));
         diskProcs++;
-        printf("\nO processo %d está usando o disco!\n", IOproc->PID);
+        printf("\nO processo %d esta usando o disco!\n", IOproc->PID);
     }
     if (tapeQ->size > 0 && tapeProcs == 0) {
         Process* IOproc = pop(tapeQ);
         append(IOList, newListItem(IOproc, currentTime, currentTime + TAPE_TIME, TAPE));
         tapeProcs++;
-        printf("\nO processo %d está usando a fita!\n", IOproc->PID);
+        printf("\nO processo %d esta usando a fita!\n", IOproc->PID);
     }
     if (printerQ->size > 0 && printerProcs == 0) {
         Process* IOproc = pop(printerQ);
         append(IOList, newListItem(IOproc, currentTime, currentTime + PRINTER_TIME, PRINTER));
         printerProcs++;
-        printf("\nO processo %d está usando a impressora!\n", IOproc->PID);
+        printf("\nO processo %d esta usando a impressora!\n", IOproc->PID);
     }
 }
 
@@ -281,13 +281,13 @@ void printCurrentState() {
     }
 
     if (runningProcessInfo != NULL) {
-        printf("Informações do processo %d: [tempo total de servico: %d]\n",
+        printf("Informacoes do processo %d: [tempo total de servico: %d]\n",
             runningProcessInfo->PID, runningProcessInfo->burstTime
         );
     }
 
     if (highPrioQ->size > 0) {
-        printf("Fila de alta prioridade: %d processos, %d é o primeiro\n",
+        printf("Fila de alta prioridade: %d processos, %d e o primeiro\n",
             highPrioQ->size, highPrioQ->head->process->PID
         );
     } else {
@@ -295,7 +295,7 @@ void printCurrentState() {
     }
 
     if (lowPrioQ->size > 0) {
-        printf("Fila de baixa prioridade: %d processos, %d é o primeiro\n",
+        printf("Fila de baixa prioridade: %d processos, %d e o primeiro\n",
             lowPrioQ->size, lowPrioQ->head->process->PID
         );
     } else {
@@ -303,21 +303,21 @@ void printCurrentState() {
     }
 
     if (diskQ->size > 0) {
-        printf("Fila de disco: %d processos, %d é o primeiro\n",
+        printf("Fila de disco: %d processos, %d e o primeiro\n",
                diskQ->size, diskQ->head->process->PID);
     } else {
         printf("Fila de disco: %d processos\n", diskQ->size);
     }
 
     if (tapeQ->size > 0) {
-        printf("Fila de fita: %d processos, %d é o primeiro\n",
+        printf("Fila de fita: %d processos, %d e o primeiro\n",
                tapeQ->size, tapeQ->head->process->PID);
     } else {
         printf("Fila de fita: %d Processos\n", tapeQ->size);
     }
 
     if (printerQ->size > 0) {
-        printf("Fila de impressora: %d processos, %d é o primeiro\n",
+        printf("Fila de impressora: %d processos, %d e o primeiro\n",
             printerQ->size, printerQ->head->process->PID);
     } else {
         printf("Fila de impressora: %d processos\n", printerQ->size);
