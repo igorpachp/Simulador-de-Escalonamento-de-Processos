@@ -256,14 +256,6 @@ void printIOTable() {
 
     while (current != NULL) {
         printf("\n[%d: %s", current->process->PID, IOtoString(current->type));
-
-        // if (current->type == DISK)
-        //     printf("DISCO");
-        // else if (current->type == TAPE)
-        //     printf("FITA");
-        // else if (current->type == PRINTER)
-        //     printf("IMPRESSORA");
-
         printf(" de %d ate %d] ", current->arrivalTime, current->exitTime);
         current = current->next;
     }
